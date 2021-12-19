@@ -1,18 +1,25 @@
 package com.proyecto.trianatourist.rute.model;
 
+import com.proyecto.trianatourist.poi.model.PointOfInteres;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
+
+@NamedEntityGraph(
+        name = "graph-rute-poi",
+        attributeNodes = @NamedAttributeNode(value = "listPointOfInterest")
+)
+
 public class Rute {
 
     @Id
@@ -30,4 +37,8 @@ public class Rute {
     private UUID id;
 
     private String name;
+
+    @Builder.Default
+    @ManyToMany (mappedBy = "listRute", fetch = FetchType.LAZY)
+    private List<PointOfInteres> listPointOfInterest = new ArrayList();
 }

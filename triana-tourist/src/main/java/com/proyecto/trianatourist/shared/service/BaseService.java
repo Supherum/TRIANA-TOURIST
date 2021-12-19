@@ -1,6 +1,7 @@
 package com.proyecto.trianatourist.shared.service;
 
 
+import com.proyecto.trianatourist.error.exceptions.EntityNotFoundExceptionCustom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,7 @@ public abstract class BaseService <T,ID, R extends JpaRepository<T,ID>> {
     @Autowired
     protected R repository;
 
-    public List<T> findAll() {
+    public List<T> findAll(Class clas) {
         return repository.findAll();
     }
 
@@ -24,23 +25,22 @@ public abstract class BaseService <T,ID, R extends JpaRepository<T,ID>> {
         return repository.findAll(pageable);
     }
 
-    public Optional<T> findById(ID id) {
-        return repository.findById(id);
+    public Optional<T> findById(ID id,Class clas) {
+        Optional<T> t=repository.findById(id);
+        if(t.isPresent())
+            return t;
+        else
+            throw new EntityNotFoundExceptionCustom(clas);
     }
+    public T save(T t) {return repository.save(t);}
 
-    public T save(T t) {
-        return repository.save(t);
-    }
+    public T edit(T t) {return save(t);}
 
-    public T edit(T t) {
-        return save(t);
-    }
-
-    public void delete(T t) {
+    public void delete(T t,Class clas) {
         repository.delete(t);
     }
 
-    public void deleteById(ID id) {
+    public void deleteById(ID id,Class clas) {
         repository.deleteById(id);
     }
 
